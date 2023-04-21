@@ -1,9 +1,10 @@
-from .models import User
+from .models import User, Profile
 from rest_framework import serializers
 
 
 
-class RegisterSerializer(serializers.ModelSerializer):
+class CreateUserSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = User
         fields = ('username', 'email', 'password', 'date_created', 'last_updated')
@@ -17,3 +18,21 @@ class RegisterSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
+
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    
+    class Meta:
+        model = Profile
+        fields = "__all__"
+    
