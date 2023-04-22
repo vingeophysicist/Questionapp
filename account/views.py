@@ -55,12 +55,3 @@ class ProfileDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes =  [IsOwnerOrReadOnly]
 
     
-
-
-
-
-
-
-
-
-
