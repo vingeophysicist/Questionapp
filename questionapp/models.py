@@ -19,6 +19,7 @@ class Subject(models.Model):
         return self.name
 
 
+
 class Question(models.Model):
     COINS_CHOICES = (
         (10, 10),
@@ -46,6 +47,7 @@ class Question(models.Model):
     def __str__(self):
         return self.label
     
+
 class Answer(models.Model):
     label = models.CharField(max_length=5000)
     image = models.ImageField()
@@ -60,6 +62,8 @@ class Answer(models.Model):
         return self.user.username
     
     
+
+
 class Comment(models.Model):
     text = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)

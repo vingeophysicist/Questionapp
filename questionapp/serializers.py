@@ -4,6 +4,7 @@ from Questionapp.models import Question, Answer, Subject, Comment
 
 
 
+
 class SubjectSerializer(serializers.ModelSerializer):
     slug = serializers.SlugField(read_only=True)
     
