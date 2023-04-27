@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from Questionapp.models import Question, Answer, Subject, Comment
+from questionapp.models import Question, Answer, Subject, Comment
 
 
 
@@ -15,12 +15,12 @@ class SubjectSerializer(serializers.ModelSerializer):
         
     
 class QuestionSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField()
-    timestamp = serializers.SerializerMethodField()
+    user = serializers.StringRelatedField(read_only=True)
+    timestamp = serializers.SerializerMethodField(read_only=True)
     slug = serializers.SlugField(read_only=True)
-    answers_count = serializers.SerializerMethodField()
-    user_has_answered = serializers.SerializerMethodField()
-    coins_given = serializers.IntegerField()
+    answers_count = serializers.SerializerMethodField(read_only=True)
+    user_has_answered = serializers.SerializerMethodField(read_only=True)
+    coins_given = serializers.IntegerField(read_only=True)
     
     class Meta:
         model = Question
