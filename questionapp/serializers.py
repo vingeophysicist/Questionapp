@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from questionapp.models import Question, Answer, Subject, Comment
+from account.models import User
+from account.serializers import UserSerializer
 
 
 
@@ -15,16 +17,16 @@ class SubjectSerializer(serializers.ModelSerializer):
         
     
 class QuestionSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
+    user_id = serializers.ReadOnlyField(source='user.id')
+    user = UserSerializer(read_only=True)
     timestamp = serializers.SerializerMethodField(read_only=True)
     slug = serializers.SlugField(read_only=True)
     answers_count = serializers.SerializerMethodField(read_only=True)
     user_has_answered = serializers.SerializerMethodField(read_only=True)
-    coins_given = serializers.IntegerField(read_only=True)
     
     class Meta:
         model = Question
-        exclude = ["updated_on"] 
+        fields = ['id', 'label', 'image', 'user_id', 'user', 'timestamp', 'coins_given', 'slug', 'answers_count', 'user_has_answered']
         
     def get_timestamp(self, instance):
         return instance.timestamp.strftime("%B %d, %Y")
@@ -34,10 +36,9 @@ class QuestionSerializer(serializers.ModelSerializer):
     
     def get_user_has_answered(self, instance):
         request = self.context.get("request")
-        return instance.answers.filter(user=request.user).exists()
+        return instance.answers.filter(user=request.user.id).exists()
     
-    def get_coins_given(self, instance):
-        pass
+   
         
     
     
@@ -71,5 +72,5 @@ class CommentSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Comment
-        field = ["text", "timestamp", "user", "question", "answer"]
+        fields = ["text", "timestamp", "user", "question", "answer"]
         
