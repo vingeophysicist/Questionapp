@@ -72,6 +72,13 @@ class AnswerCreateAPIView(generics.CreateAPIView):
         profile = Profile.objects.get(user=user)
         profile.coin += question.coins_given
         profile.save()
+        
+class AnswerListView(generics.ListAPIView):
+    serializer_class = AnswerSerializer
+
+    def get_queryset(self):
+        slug = self.kwargs.get('slug')
+        return Answer.objects.filter(question__slug=slug).order_by("-timestamp")
 
 
 
@@ -81,15 +88,10 @@ class CommentCreateAPIView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     
     def perform_create(self, serializer):
-        question_slug = self.kwargs.get('question_slug', None)
-        answer_slug = self.kwargs.get('answer_slug', None)
-        if question_slug:
-            question = Question.objects.get(slug=question_slug)
-            serializer.save(user=self.request.user, question=question)
-        elif answer_slug:
-            answer = Answer.objects.get(slug=answer_slug)
-            serializer.save(user=self.request.user, answer=answer)
-        else:
-            serializer.save(user=self.request.user)
+        user = self.request.user
+        kwarg_slug = self.kwargs.get('slug')
+        question = get_object_or_404(Question, slug=kwarg_slug)
+        serializer.save(user=user, question=question)
         
+            
     

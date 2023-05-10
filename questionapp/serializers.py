@@ -69,7 +69,12 @@ class AnswerSerializer(serializers.ModelSerializer):
     
     
 class CommentSerializer(serializers.ModelSerializer):
+    timestamp = serializers.SerializerMethodField()
     
+    def get_timestamp(self, instance):
+        return instance.timestamp.strftime("%B %d, %Y")
+    
+
     class Meta:
         model = Comment
         fields = ["text", "timestamp", "user", "question", "answer"]
