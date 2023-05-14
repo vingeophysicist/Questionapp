@@ -5,15 +5,15 @@ from account.serializers import UserSerializer
 
 
 
-
-
 class SubjectSerializer(serializers.ModelSerializer):
     slug = serializers.SlugField(read_only=True)
+
     
     
     class Meta:
         model = Subject
-        field = "__all__"
+        fields = "__all__"
+
         
     
 class QuestionSerializer(serializers.ModelSerializer):
@@ -26,7 +26,7 @@ class QuestionSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Question
-        fields = ['id', 'label', 'image', 'user_id', 'user', 'timestamp', 'coins_given', 'slug', 'answers_count', 'user_has_answered']
+        fields = ['id', 'label', 'image', 'user_id', 'user', 'timestamp', 'coins_given', 'slug', 'answers_count', 'user_has_answered', 'subject']
         
     def get_timestamp(self, instance):
         return instance.timestamp.strftime("%B %d, %Y")
@@ -38,7 +38,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         return instance.answers.filter(user=request.user.id).exists()
     
-   
+
         
     
     

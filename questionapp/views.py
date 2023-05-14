@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from rest_framework import generics, viewsets
+from rest_framework import generics, viewsets, status
+from rest_framework.generics import ListAPIView
 from questionapp.models import Question, Answer, Subject, Comment
 from questionapp.serializers import QuestionSerializer, AnswerSerializer, SubjectSerializer, CommentSerializer
 from rest_framework.permissions import IsAuthenticated
@@ -13,16 +14,22 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.shortcuts import get_object_or_404
 from account.models import Profile
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
+from rest_framework.views import APIView
 
 
 
 
-
-class SubjectViewSet(viewsets.ModelViewSet):
-    queryset = Subject.objects.get(id=1)
-    serializer_class = SubjectSerializer
+class SubjectListAPIView(ListAPIView):
+    serializer_class = QuestionSerializer
+    
+    def get_queryset(self):
+        slug = self.kwargs['slug'] 
+        subject = Subject.objects.get(slug=slug)
+        return Question.objects.filter(subject=subject)
     
     
+
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all().order_by("-timestamp")
     serializer_class = QuestionSerializer
@@ -40,20 +47,8 @@ class QuestionViewSet(viewsets.ModelViewSet):
         profile.coin -= int(coins)
         profile.save()
         serializer.save(user=user)
-       
-    
-    @action(detail=False, methods = ['get'])
-    def subjects(self, request, subject=None):
-        queryset = self.queryset
-        if subject:
-            queryset = queryset.filter(subject=subject)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-    
-      
         
-
-
+     
 
 class AnswerCreateAPIView(generics.CreateAPIView):
     queryset = Answer.objects.all().order_by("-timestamp")
@@ -73,12 +68,54 @@ class AnswerCreateAPIView(generics.CreateAPIView):
         profile.coin += question.coins_given
         profile.save()
         
+
+
+
 class AnswerListView(generics.ListAPIView):
     serializer_class = AnswerSerializer
 
     def get_queryset(self):
         slug = self.kwargs.get('slug')
         return Answer.objects.filter(question__slug=slug).order_by("-timestamp")
+    
+
+
+
+class AnswerRetrieveUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Answer.objects.all()
+    serializer_class = AnswerSerializer
+    permission_classes = [IsAuthenticated, IsAuthorOrReadOnly] 
+    
+
+
+
+class AnswerClapView(APIView):
+    serializer_class = AnswerSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def delete(self, request, pk):
+        answer = get_object_or_404(Answer, pk=pk)
+        user = request.user
+        
+        answer.clappers.remove(user)
+        answer.save()
+        
+        serializer_context = {"request":request}
+        serializer = self.serializer_class(answer, context=serializer_context)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+    def post(self, request, pk):
+        answer = get_object_or_404(Answer, pk=pk)
+        user = request.user
+        
+        answer.clappers.add(user)
+        answer.save()
+        
+        serializer_context = {"request" : request}
+        serializer = self.serializer_class(answer, context=serializer_context)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+     
 
 
 
