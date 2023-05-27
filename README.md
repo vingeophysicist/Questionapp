@@ -16,4 +16,4 @@ Authentication and authorization: Implements user authentication and authorizati
 
 Frontend routing: Utilizes React Router or similar libraries to enable client-side routing and handle navigation within the application.
 
-Responsive design: Develops a responsive user interface that adapts to different screen sizes and devices.
+Responsive design: Develops a responsive user interface using materialui that adapts to different screen sizes and devices.
