@@ -19,5 +19,4 @@ urlpatterns = [
    path('question/<slug:slug>/comment/', CommentCreateAPIView.as_view(), name='comment'),
    path('subjects/<slug:slug>/', SubjectListAPIView.as_view(), name='subject-questions'),
 
-   
 ]
