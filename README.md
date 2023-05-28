@@ -2,7 +2,7 @@
 
 This Question-Answer web application is built using a combination of React and Django. React and Material UI is used on the frontend, providing a dynamic and interactive user interface, while Django serves as the backend framework for handling data processing and database management.
 
-**Features:**
+#**Features:**#
 
 React frontend: Utilizes the React library to build the user interface and manage the application's state.
 
