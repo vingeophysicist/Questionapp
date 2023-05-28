@@ -1,6 +1,6 @@
 **Description:**
 
-This web application is built using a combination of React and Django. React and Material UI is used on the frontend, providing a dynamic and interactive user interface, while Django serves as the backend framework for handling data processing and database management.
+This Question-Answer web application is built using a combination of React and Django. React and Material UI is used on the frontend, providing a dynamic and interactive user interface, while Django serves as the backend framework for handling data processing and database management.
 
 **Features:**
 
